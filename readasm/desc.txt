@@ -1,5 +1,3 @@
 **WIP**
 
-File to read .asm file at path passed as parameter. 
-Outputs two lists, one for data section and another for text.
-
+NEEDS UNIT TESTING.
