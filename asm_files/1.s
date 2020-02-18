@@ -17,5 +17,3 @@ sw $s2,0($t2)
 li $v0,10
 syscall
 .end
-
-# Arjun A 181CO109 S-1

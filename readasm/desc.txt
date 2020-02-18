@@ -1,0 +1,6 @@
+**WIP**
+"""Open file at path passed as parameter. Returns a tuple of two lists, containing the instructions of data and text sections respectively."""
+[x] Made readasm function.
+[x] Tested small use case
+[ ] Added unit tests 
+[x] Made init file

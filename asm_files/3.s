@@ -13,5 +13,3 @@ syscall
 
 .end
 
-# Arjun A 181CO109 S-1
-
