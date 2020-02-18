@@ -1,3 +1,6 @@
 **WIP**
 
-NEEDS UNIT TESTING.
+[x] Made readasm function to open file at path passed as parameter, and list instructions in two lists.
+[x] Tested small use case
+[ ] Added unit tests 
+[x] Made init file
