@@ -1,0 +1,10 @@
+"""
+	translateInstruction(string)
+	The function will recieve a sinle asm instruction string .
+	Then call function check_instruction_type() and store the struct returned.
+	Returns the 32-bit binary instruction to parseLine()
+"""
+[ ] Made translateInstruction function.
+[ ] Tested small use case
+[ ] Added unit tests 
+[ ] Made init file
