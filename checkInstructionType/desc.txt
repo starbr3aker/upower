@@ -1,0 +1,13 @@
+"""Takes string as input. Returns the type of instruction of the string."""
+
+- [ ] Make function to accept string input, return an int corresponding to the instruction format type.
+
+1: X
+2: XO
+3: XS
+4: D
+5: DS
+6: M
+7: B
+8: I
+9: System Calls
