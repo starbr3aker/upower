@@ -1,6 +1,13 @@
-This function takes an ASM instruction as input. Ex: 'add $t1, $t0, $t2'
+"""Takes string as input. Returns the type of instruction of the string."""
 
-And it returns the mnemonic (the instruction type- label, assembler directive) the input operands, the output operands and other misc information
-about the ASM instruction.
-It also outputs the return value of the parseLine() function.
+- [ ] Make function to accept string input, return an int corresponding to the instruction format type.
 
+1: X
+2: XO
+3: XS
+4: D
+5: DS
+6: M
+7: B
+8: I
+9: System Calls

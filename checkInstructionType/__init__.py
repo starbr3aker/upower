@@ -1,3 +1,3 @@
-from .checkInstructionType import checkInstructionType
+from .checkInstructionType import checkType
 
-__all__ = [checkInstructionType]
+__all__ = [checkType]

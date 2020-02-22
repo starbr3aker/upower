@@ -1,23 +1,44 @@
-def instructionType(str):
-    """ Determines if the ASM instruction is a comment or asn assembler directive or a label or 
-     and instruction """
-
-    str=str.split()
-    if(str[0]=="#"):
-        return "Comment"
-    elif(str[0][0]=="."):
-        return "Assembler Directive"
-    elif(str[0][-1]==":"):
-        return "Label"
-    else:
-        return "Instruction"
-
 def mnemonic(str):
     """ Returns the mnemonic of the ASM instruction """
-    return str[0]
+    return str.split()[0]
 
-def inputOperands(str):
-    """ Returns the input operands mentioned in the ASM instruction """
 
-def outputOperands(str):
-    """ Returns the output operands mentioned in the ASM instruction """
+def checkType(str):
+    """Returns type of instruction based on mnemonic"""
+
+    lookup = {}
+    lookup.update(
+        dict.fromkeys(
+            ["and", "extsw", "nand", "or", "xor", "sld", "srd", "srad", "cmp"], 1
+        )
+    )
+    lookup.update(dict.fromkeys(["add", "subf"], 2))
+    lookup.update(dict.fromkeys(["sradi"], 3))
+    lookup.update(
+        dict.fromkeys(
+            [
+                "addi",
+                "addis",
+                "andi",
+                "ori",
+                "xori",
+                "lwz",
+                "stw",
+                "stwu",
+                "lhz",
+                "lha",
+                "sth",
+                "lbz",
+                "stb",
+                "cmpi",
+            ],
+            4,
+        )
+    )
+    lookup.update(dict.fromkeys(["ld", "std"], 5))
+    lookup.update(dict.fromkeys(["rlwinm"], 6))
+    lookup.update(dict.fromkeys(["bc", "bca"], 7))
+    lookup.update(dict.fromkeys(["b", "bl"], 8))
+    lookup.update(dict.fromkeys(["sc"], 9))
+
+    return lookup.get(mnemonic(str), "INSTR_NOT_FOUND")
