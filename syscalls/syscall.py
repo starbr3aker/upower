@@ -11,7 +11,11 @@ def extractstring(dicto, address):
 def syscall(instruction, regdict, *args):
     """Executes a system call. Corresponding dictionary of registers is passed, with the addresses of the arguments."""
 
+    global static
     if instruction == 1:
         return print("Printing integer value {}".format(regdict[args[0]]))
+    elif instruction == 4:
+        string = extractstring(static, args[0])
+        print("Printing string {}".format(string))
     else:
         return print("This path hasn't been programmed yet.")
