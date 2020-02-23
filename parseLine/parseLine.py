@@ -1,12 +1,9 @@
 
-class Instruction:
-    def __init__(self, instruction):
-        self.in
-
-def addToSymTab(lable, data, type, add):
+def addToSymTab(lable, data, type, address):
 
 def chkLabel(line):
 
+    
 def parseLine():
     for i in (data):
 
@@ -25,7 +22,8 @@ def parseLine():
                 #print(line)
                 mnemnomic = line[0]
                 output = line[1]
+                inp = []
                 for i in range (2, len(line)-2):
-                    output[i-2] = line[i]
+                    inp.append(line[i])
 
-    print(mnemn, input, output);
+    print(mnemn, inp, output);
