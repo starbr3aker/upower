@@ -14,7 +14,11 @@ reserved = {}
 text = {}
 static = {}
 dynamic = {}
-reg = {}
+register = {}
+symtab = {}
+labels = []
+dtype = []
+values = []
 
 
 def initialise():
@@ -53,8 +57,8 @@ def initialise():
     dynamic = {i: 0 for i in range(3 * B, 4 * B)}
     print("dynamic memory initialised")
 
-    global reg
-    reg = {i: 0 for i in range(32)}
+    global register
+    register = {i: 0 for i in range(32)}
     print("32 registers ready")
 
 
@@ -64,11 +68,11 @@ initialise()
 def makesymboltable(path):
     global staticstart
     global staticend
-    data, text = readasm(path)
-    labels = []
-    dtype = []
-    values = []
-    symtab = {}
+    data, _ = readasm(path)
+    global labels
+    global dtype
+    global values
+    global symtab
     for i in data:
         labels.append(i.split()[0].replace(":", ""))
         dtype.append(i.split()[1].replace(".", ""))
@@ -96,4 +100,31 @@ def makesymboltable(path):
     return symtab
 
 
-makesymboltable("asm_files/1.s")
+def storeintoregister(address, value):
+    global register
+    register[address] = value
+    return None
+
+
+def readfromregister(address):
+    return register[address]
+
+
+def readfromlabel(label, address):
+    """Read value from label, and store that value into the address in register"""
+    global dtype
+    global labels
+    global register
+    global symtab
+    idx = 0  # index of label in labels
+
+    register[address] = symtab[label]
+
+    return dtype[idx]
+
+
+def execute(path):
+    symtab = makesymboltable(path)  # noqa: F841
+    _, text = readasm(path)
+    for line in text:
+        instructtype = checkType(line)  # noqa: F841 F821
