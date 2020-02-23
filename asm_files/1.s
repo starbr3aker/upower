@@ -2,6 +2,7 @@
 x: .word 5
 y: .word 10
 sum: .word 0
+label: .asciiz "Hllo"
 
 .text
 .globl main
