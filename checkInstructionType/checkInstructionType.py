@@ -42,3 +42,20 @@ def checkType(str):
     lookup.update(dict.fromkeys(["sc"], 9))
 
     return lookup.get(mnemonic(str), "INSTR_NOT_FOUND")
+
+
+lines = ["add a0, a1, a2", "add a0, a2, a3"]
+
+
+def getuniquevars(lines):
+    mems = []
+    for line in lines:
+        val = line.split()
+        val.pop(0)
+        mems = mems + val
+    for num, item in enumerate(mems):
+        mems[num] = item.split(",")[0]
+    return list(set(mems))
+
+
+print(getuniquevars(lines))
