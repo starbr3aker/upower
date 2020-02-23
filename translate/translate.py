@@ -189,11 +189,11 @@ def i(string,binary):
     return b32
 
 
-def translate(string,symtab):
+def translate(string,inst_tab):
     """Translating to a 32b instruction"""
     instr = string.split(" ",1)
     form = check_instruction_type(instr[0])
-    binary = symtab.get(instr[0])
+    binary = inst_tab.get(instr[0])
     if form == 1 :
         x(instr[1],binary)
     elif form == 2 :
