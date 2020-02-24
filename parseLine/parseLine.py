@@ -59,5 +59,6 @@ def parseLine():
 
                 Instruction_Set.append(Instruction(mnemnomic, output, input, i))
 
-print(SymTab)
-print(mnemnomic, inp, output)
+
+# print(SymTab)
+# print(mnemnomic, inp, output)
