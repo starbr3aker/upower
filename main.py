@@ -128,7 +128,8 @@ def exec(line):
     global register
     global symtab
     global static
-    # print(register)
+    # print(instr)
+    print(line)
     if instr == "add":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
@@ -137,6 +138,14 @@ def exec(line):
         t2 = register[t2]
         register[res] = t1 + t2
         print("r{} + r{} = {}, at r{}".format(t1, t2, t1 + t2, res))
+    if instr == "ld" or instr == "lhz":
+        line = line.replace(",", "")
+        target = line.split()[1]
+        print(line)
+        loc = line.split()[2]
+        disp = loc.split("(")[0]
+        loc = loc.split("(")[1].replace(")", "")
+        print("{} {} {}/*".format(target, disp, loc))
 
 
 def execute(path):
