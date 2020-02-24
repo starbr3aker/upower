@@ -1,6 +1,45 @@
 import re
 
 
+INST_TAB = {
+	"add": (31,0,266,0),
+	"addi": (14),
+	"addis": (15),
+	"and": (31,28),
+	"andi": (28),
+	"extsw": (31,986,0),
+	"nand": (31,476,0),
+	"or": (31,444,0),
+	"ori": (24),
+	"subf": (31,0,40,0),
+	"xor": (31,316,0),
+	"xori":(26),
+	"ld": (58,0),
+	"lwz": (32),
+	"std": (62,0),
+	"stw": (36),
+	"stwu": (37),
+	"lhz": (40),
+	"lha": (42),
+	"sth":(44),
+	"lbz": (34),
+	"stb": (38),
+	"rlwinm": (21,0),
+	"sld": (31,27,0),
+	"srd":(31,539,0),
+	"srad": (31,794,0),
+	"sradi": (31,413,0),
+	"b": (18,0,0),
+	"ba":(18,1,0),
+	"bl": (18,0,1),
+	"bclr": (19,0),
+	"bc": (19,0,0),
+	"bca": (19,1,0),
+	"cmp": (31,0,0),
+	"cmpi": (11)
+}
+
+
 def twos_comp(val, bits):
     """compute the 2's complement of int value val"""
     if val != 0:
@@ -189,11 +228,11 @@ def i(string,binary):
     return b32
 
 
-def translate(string,inst_tab):
+def translate(string):
     """Translating to a 32b instruction"""
     instr = string.split(" ",1)
     form = check_instruction_type(instr[0])
-    binary = inst_tab.get(instr[0])
+    binary = INST_TAB.get(instr[0])
     if form == 1 :
         x(instr[1],binary)
     elif form == 2 :
