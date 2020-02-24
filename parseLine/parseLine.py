@@ -1,5 +1,17 @@
 SymTab = {}
 
+class Instruction:
+    def __init__(self, mnemnomic, output, input, address):
+        self.mnemnomic = mnemnomic
+        self.output = output
+        self.input = input
+        self.address = address
+
+    def readAddres(self)
+        return self.address
+
+Instruction_Set = []
+
 def addToSymTab(lable, data, type, address):
     if(type): #If its a lable
         SymTab[lable] = address
@@ -44,5 +56,8 @@ def parseLine():
                 inp = []
                 for i in range (2, len(line)):
                     inp.append(line[i])
+
+                Instruction_Set.append(Instruction(mnemnomic, output, input, i))
+
 print(SymTab)
 print(mnemnomic, inp, output)
