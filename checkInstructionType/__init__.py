@@ -1,3 +1,3 @@
-from .checkInstructionType import checkType
+from .checkInstructionType import checkType, getuniquevars
 
-__all__ = [checkType]
+__all__ = [checkType, getuniquevars]
