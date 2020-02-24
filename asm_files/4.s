@@ -24,6 +24,6 @@ loop:
 end:
     addi 2, 0, 1    
 	add 4, 17, 0
-	syscall
+	sc LEV
 
 

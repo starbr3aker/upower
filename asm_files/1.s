@@ -12,8 +12,8 @@ ld 9,0(y)    #$t1
 ld 16,0(8)   #$s0
 ld 17,0(9)   #$s1
 add 18,17,16  #$s2, $s1, $s0
-addi 10,sum   #$t2
+addi 10,0,sum   #$t2
 std 18,0(10)  #$s2, $t2
-addi 2,10     #$v0
+addi 2,0,10     #$v0
 sc LEV
 .end
