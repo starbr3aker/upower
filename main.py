@@ -122,9 +122,8 @@ def readfromlabel(label, address):
 
     return dtype[idx]
 
-
 def execute(path):
     symtab = makesymboltable(path)  # noqa: F841
     _, text = readasm(path)
     for line in text:
-        instructtype = checkType(line)  # noqa: F841 F821
+        instructtype = checkInstructionType(line)  # noqa: F841 F821
