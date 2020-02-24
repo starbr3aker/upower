@@ -1,5 +1,6 @@
 .data
 	A: .word 10
+	B: .word 10, 12, 31
 
 .text
 .globl main
