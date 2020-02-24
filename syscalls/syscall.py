@@ -17,5 +17,7 @@ def syscall(instruction, regdict, *args):
     elif instruction == 4:
         string = extractstring(static, args[0])
         print("Printing string {}".format(string))
+    elif instruction == 10:
+        print("Exiting.")
     else:
         return print("This path hasn't been programmed yet.")
