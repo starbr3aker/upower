@@ -1,4 +1,5 @@
 from readasm import readasm  # noqa: F401
+from main import syscall
 import checkInstructionType  # noqa: F401
 import memory  # noqa: F401
 
@@ -185,6 +186,8 @@ def exec(line):
             )
         )
 
+    if instr == "sc":
+        syscall(register[2], regdict, *args)
 
 def execute(path):
     symtab = makesymboltable(path)  # noqa: F841
