@@ -7,7 +7,7 @@
 
 main:
     ld 8, 0(4096)   # to reserve space for later 
-    ld 9, 0(9)	# t1=A
+    ld 9, 0(9)  # t1=A
     ld 10, 0(10)	# t2=B
     std 9, 0(8)	
     std 10, 0(28)
