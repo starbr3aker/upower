@@ -1,0 +1,3 @@
+**WIP**
+
+File to control execution. Run through each command and execute, store the instruction proper like.
