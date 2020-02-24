@@ -1,0 +1,5 @@
+**WIP**
+Implementation for syscalls of any type.
+Faithful recreation.
+Takes parameters of syscall code, and syscall arguments.
+Currently supports print number
