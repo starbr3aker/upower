@@ -74,9 +74,9 @@ def makesymboltable(path):
     global values
     global symtab
     for i in data:
-        labels.append(i.split()[0].replace(":", ""))
-        dtype.append(i.split()[1].replace(".", ""))
-        values.append(i.split()[2])
+        labels.append(i.split(maxsplit=2)[0].replace(":", ""))
+        dtype.append(i.split(maxsplit=2)[1].replace(".", ""))
+        values.append(i.split(maxsplit=2)[2])
 
     # print(labels)
     # print(dtype)
@@ -84,9 +84,17 @@ def makesymboltable(path):
 
     for i in range(len(labels)):
         if dtype[i] == "word":
-            static[staticend] = values[i]
-            symtab.update({labels[i]: staticend})
-            staticend = staticend + 1
+            if len(values[i].split(",")) > 1:
+                print(values[i])
+                valueslist = values[i].split(",")
+                for j in range(len(valueslist)):
+                    static[staticend] = int(valueslist[j].strip())
+                    print(static[staticend])
+                    staticend = staticend + 1
+            else:
+                static[staticend] = int(values[i])
+                symtab.update({labels[i]: staticend})
+                staticend = staticend + 1
         elif dtype[i] == "asciiz":
             values[i] = values[i].replace('"', "")
             static[staticend] = len(values[i])
@@ -96,8 +104,13 @@ def makesymboltable(path):
                 staticend = staticend + 1
 
     # print(symtab)
+    # for i in range(len(labels)):
+    #     print(static[symtab[labels[i]]])
 
     return symtab
+
+
+# makesymboltable("asm_files/1.s")
 
 
 def storeintoregister(address, value):
@@ -129,7 +142,7 @@ def exec(line):
     global symtab
     global static
     # print(instr)
-    print(line)
+    # print(line)
     if instr == "add":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
@@ -137,7 +150,15 @@ def exec(line):
         t1 = register[t1]
         t2 = register[t2]
         register[res] = t1 + t2
-        print("r{} + r{} = {}, at r{}".format(t1, t2, t1 + t2, res))
+        print("{} + {} = {}, at {}".format(t1, t2, t1 + t2, res))
+    if instr == "addi":
+        res = line.split()[1].replace(",", "")
+        t1 = line.split()[2].replace(",", "")
+        t2 = line.split()[3].replace(",", "")
+        t1 = register[t1]
+        t2 = int(t2)
+        register[res] = t1 + t2
+        print("{} + {} = {}, at {}".format(t1, t2, t1 + t2, res))
     if instr == "ld" or instr == "lhz":
         line = line.replace(",", "")
         target = line.split()[1]
@@ -145,13 +166,34 @@ def exec(line):
         loc = line.split()[2]
         disp = loc.split("(")[0]
         loc = loc.split("(")[1].replace(")", "")
-        print("{} {} {}/*".format(target, disp, loc))
+        if loc in symtab.keys():
+            register[target] = static[symtab[loc] + int(disp)]
+        else:
+            register[target] = static[register[loc] + int(disp)]
+        print("{} is now {}/*".format(target, register[target]))
+    if instr == "std":
+        line = line.replace(",", "")
+        source = line.split()[1]
+        print(line)
+        dest = line.split()[2]
+        disp = dest.split("(")[0]
+        dest = dest.split("(")[1].replace(")", "")
+        static[symtab[dest] + int(disp)] = register[target]
+        print(
+            "{} is now {}/*".format(
+                symtab[dest] + int(disp), static[symtab[source] + int(disp)]
+            )
+        )
 
 
 def execute(path):
     symtab = makesymboltable(path)  # noqa: F841
     _, text = readasm(path)
+    global register
+    register["r2"] = 3
+    register["r3"] = 4
     for line in text:
+
         exec(line)
 
 
