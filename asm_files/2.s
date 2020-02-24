@@ -6,21 +6,21 @@
 .globl main
 
 main:
-    lui $t0, 4096   # to reserve space for later 
-    lw $t1, A	# t1=A
-    lw $t2, B	# t2=B
-    sw $t1, 0($t0)	
-    sw $t2, 0($gp)
-    add $t3, $t1 $t2	# t3 = t1 + t2
-    sw $t3, 396($t0) 	# 396 as each word stores 4 bytes
+    lwz 8, 0(4096)   # to reserve space for later 
+    lwz 9, 0(9)	# t1=A
+    lwz 10, 0(10)	# t2=B
+    stw 9, 0(8)	
+    stw 10, 0(28)
+    add 11, 9, 10	# t3 = t1 + t2
+    stw 11, 396(8) 	# 396 as each word stores 4 bytes
 
 # To display the result
-	li $v0, 1
-	add $a0, $zero, $t3
-	syscall
+	lwz 2, 1
+	add 4, 0, 11
+	sc LEV
 
-    li $v0,10
-    syscall
+    lwz 2,10
+    sc LEV
 
 
 .end

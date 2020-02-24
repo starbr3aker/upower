@@ -7,13 +7,13 @@ sum: .word 0
 .globl main
 
 main:
-la $t0,x
-la $t1,y
-lw $s0,0($t0)
-lw $s1,0($t1)
-add $s2,$s1,$s0
-la $t2,sum
-sw $s2,0($t2)
-li $v0,10
-syscall
+lwz 8,0(x)    #$t0
+lwz 9,0(y)    #$t1 
+lwz 16,0(8) #$s0
+lwz 17,0(9) #$s1
+add 18,17,16  #$s2, $s1, $s0
+addi 10,sum   #$t2
+stw 18,0(10)  #$s2, $t2
+addi 2,10   #$v0
+sc LEV
 .end
