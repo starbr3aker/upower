@@ -13,6 +13,10 @@ def readasm(path):
 
         data = list(filter(lambda x: x, [process(i) for i in file[pos1 + 1 : pos2]]))
         text = list(filter(lambda x: x, [process(i) for i in file[pos2 + 1 :]]))
+
+        shorthand = 1
+        if shorthand:
+            text = text[2:]
         # print(data)
         # print(text)
         return (data, text)
