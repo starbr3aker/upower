@@ -1,5 +1,7 @@
 import re
-
+import sys
+sys.path.append('../')
+from checkInstructionType import checkInstructionType
 
 INST_TAB = {
 	"add": (31,0,266,0),
@@ -231,7 +233,7 @@ def i(string,binary):
 def translate(string):
     """Translating to a 32b instruction"""
     instr = string.split(" ",1)
-    form = check_instruction_type(instr[0])
+    form = checkInstructionType(instr[0])
     binary = INST_TAB.get(instr[0])
     if form == 1 :
         x(instr[1],binary)
