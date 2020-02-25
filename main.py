@@ -1,4 +1,5 @@
 from readasm import readasm  # noqa: F401
+from main import syscall
 import checkInstructionType  # noqa: F401
 import memory  # noqa: F401
 
@@ -19,6 +20,20 @@ symtab = {}
 labels = []
 dtype = []
 values = []
+
+SymTab_Lable = {}
+
+class Instruction:
+    def __init__(self, mnemnomic, output, input, address):
+        self.mnemnomic = mnemnomic
+        self.output = output
+        self.input = input
+        self.address = address
+
+    def readAddres(self)
+        return self.address
+
+Instruction_Set = []
 
 
 def initialise():
@@ -61,6 +76,12 @@ def initialise():
     register = {"r{}".format(i): 0 for i in range(32)}
     print("32 registers ready")
 
+def addToSymTab(lable, type, address):
+    if(type): #If its a lable
+        SymTab_Lable[lable] = address
+
+def RedSymTab_Lable(lable): # Returns the memory of the lable
+    return SymTab_Lable[lable]
 
 initialise()
 
@@ -103,6 +124,28 @@ def makesymboltable(path):
                 static[staticend] = values[i][j]
                 staticend = staticend + 1
 
+    for i in range(len(text)):
+        line = text[i]
+        if line[0] != '#' : #Ignore Comments
+            if ":" in line: #Chk for Lable
+                lable = line.split(":",1)
+                lable[1] = lable[1].strip()
+                lable[0] = lable[0].strip()
+                type = not lable[1];
+                addToSymTab(lable[0], type, i)
+            else: #Instructions
+                line = line.replace(","," ")
+                line = line.split(" ")
+                line = [i for i in line if i]
+                #print(line)
+                mnemnomic = line[0]
+                output = line[1]
+                inp = []
+                for i in range (2, len(line)):
+                    inp.append(line[i])
+
+                Instruction_Set.append(Instruction(mnemnomic, output, input, i))
+
     # print(symtab)
     # for i in range(len(labels)):
     #     print(static[symtab[labels[i]]])
@@ -136,7 +179,7 @@ def readfromlabel(label, address):
     return dtype[idx]
 
 
-def exec(line):
+def exec(line, pos):
     instr = line.split()[0]
     global register
     global symtab
@@ -185,16 +228,25 @@ def exec(line):
             )
         )
 
+    if instr == "sc":
+        syscall(register[2], regdict, *args)
 
+    return pos
 def execute(path):
     symtab = makesymboltable(path)  # noqa: F841
     _, text = readasm(path)
     global register
     register["r2"] = 3
     register["r3"] = 4
-    for line in text:
 
-        exec(line)
+    for i in range(len(Instruction_Set)):
+        curr_line = text[Instruction_Set[i].readAddres()]
+        if (curr_line == "syscall"):
+            end()
+        i = exec(curr_line, i);
 
+    # for line in text:
+    #
+    #     exec(line)
 
 execute("asm_files/test.s")
