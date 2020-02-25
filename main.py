@@ -148,7 +148,7 @@ def syscall(instruction, *args):
         return print("This path hasn't been programmed yet.")
 
 
-def exec(line):
+def exec(line, i):
     instr = line.split()[0]
     global register
     global symtab
