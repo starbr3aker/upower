@@ -38,7 +38,7 @@ For the .text section, do:
 
 STYLE GUIDE: https://www.python.org/dev/peps/pep-0008/
 
-Syscall:
+## Syscall:
 
 https://www.kernel.org/doc/html/latest/powerpc/syscall64-abi.html
 
