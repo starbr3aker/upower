@@ -38,4 +38,16 @@ For the .text section, do:
 
 STYLE GUIDE: https://www.python.org/dev/peps/pep-0008/
 
+Syscall:
+
+https://www.kernel.org/doc/html/latest/powerpc/syscall64-abi.html
+
+http://students.cs.tamu.edu/tanzir/csce350/reference/syscalls.html
+
+register 3 is parameter/address
+
+register 0 is the input/type of syscall
+
+register 31 is treated as zero register.
+
 
