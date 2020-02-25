@@ -85,11 +85,11 @@ def makesymboltable(path):
     for i in range(len(labels)):
         if dtype[i] == "word":
             if len(values[i].split(",")) > 1:
-                print(values[i])
+                # print(values[i])
                 valueslist = values[i].split(",")
                 for j in range(len(valueslist)):
                     static[staticend] = int(valueslist[j].strip())
-                    print(static[staticend])
+                    # print(static[staticend])
                     staticend = staticend + 1
             else:
                 static[staticend] = int(values[i])
@@ -99,13 +99,14 @@ def makesymboltable(path):
             values[i] = values[i].replace('"', "")
             static[staticend] = len(values[i])
             symtab.update({labels[i]: staticend})
+            staticend = staticend + 1
             for j in range(len(values[i])):
                 static[staticend] = values[i][j]
                 staticend = staticend + 1
 
-    # print(symtab)
+    print(symtab)
     # for i in range(len(labels)):
-    #     print(static[symtab[labels[i]]])
+    #     print(static[symtab[labels[0]]])
 
     return symtab
 
@@ -122,6 +123,7 @@ def makelabeltable(path):
 def extractstring(address):
     """Takes a string from a dictionary (memory unit). The length of the string must be in the location of address"""
     global static
+    # print(static[int(address)])
     len = int(static[address])
     string = ""
     for i in range(len):
@@ -130,13 +132,32 @@ def extractstring(address):
     return string
 
 
+def syscall(instruction, *args):
+    """Executes a system call. Corresponding dictionary of registers is passed, with the addresses of the arguments."""
+    global register
+    global static
+    print("Trigger syscall{}".format(instruction))
+    if instruction == 1:
+        return print("Printing integer value {}".format(register[args[0]]))
+    elif instruction == 4:
+        string = extractstring(register[args[0]])
+        print("Printing string\n{}".format(string))
+    elif instruction == 10:
+        print("Exiting.")
+    else:
+        return print("This path hasn't been programmed yet.")
+
+
 def exec(line):
     instr = line.split()[0]
     global register
     global symtab
     global static
+    global staticstart
     # print(instr)
     # print(line)
+
+    # print(static[8388608])
     if instr == "add":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
@@ -151,7 +172,7 @@ def exec(line):
         t1 = int(t1)
         t2 = line.split()[3].replace(",", "")
         register[res] = int(t1) + register[t2]
-        print(">>register {} = {} + {}".format(res, t1, t2))
+        print(">>register {} = {} + r{}".format(res, t1, t2))
     if instr == "la":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
@@ -169,14 +190,18 @@ def exec(line):
         loc = line.split()[2]
         disp = loc.split("(")[0]
         loc = loc.split("(")[1].replace(")", "")
-        # print(type(target))
-        # print(type(loc))
+        # print((target))
+        # print((loc))
         # print(type(int(disp)))
         if loc in symtab.keys():
             register[target] = symtab[loc] + int(disp)
         else:
             print(register[target])
-            register[target] = static[register[loc] + int(disp)]
+            if register[loc] + int(disp) < staticstart:
+                register[target] = 0
+                print("Error, access out of bounds.")
+            else:
+                register[target] = static[register[loc] + int(disp)]
         print(">>register {} is now {}".format(target, register[target]))
     if instr == "std":
         line = line.replace(",", "")
@@ -198,13 +223,16 @@ def exec(line):
                     register[dest] + int(disp), static[register[dest] + int(disp)]
                 )
             )
+    if instr == "sc":
+        parameter = register["0"]
+        syscall(parameter, "3")
 
 
 def execute(path):
     global symtab
     symtab = makesymboltable(path)
     _, text = readasm(path)
-    print(symtab)
+    # print(symtab)
     for line in text:
         print(line)
         exec(line)

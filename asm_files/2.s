@@ -6,7 +6,7 @@
 .globl main
 
 main:
-    addi 8, 4096, 0   # to reserve space for later 
+    addi 8, 4096, 31   # to reserve space for later 
     ld 9, 0(A)  # t1=address of A
     ld 10, 0(B)	# t2=address of B
     ld 9, 0(9)
@@ -15,11 +15,12 @@ main:
     std 11, 396(8) 	# 396 as each word stores 4 bytes
 
 # To display the result
-	ld 2, 1
-	add 4, 0, 11
+	addi 3, 0, 11
+	addi 0, 0, 1    #syscall to print int
 	sc LEV
 
-    ld 2,10
+    addi 0, 0, 31     #syscall instruction reset
+    addi 0, 10, 0     #syscall to exit
     sc LEV
 
 

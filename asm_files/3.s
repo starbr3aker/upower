@@ -5,10 +5,12 @@ str: .asciiz "Hello World!"
 .globl main
 main:
 addi 2, 0, 4
-ld 4, 0(str)
+ld 3, 0(str)
+addi 0, 4, 0
 sc LEV
+addi 0, 0, 31      #reset
 
-ld 2, 0(10)
+addi 0, 10, 0     #syscall to exit
 sc LEV
 
 .end
