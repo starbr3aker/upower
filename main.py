@@ -230,7 +230,7 @@ def exec(line, pos):
 
     if instr == "sc":
         syscall(register[2], regdict, *args)
-        
+
     return pos
 def execute(path):
     symtab = makesymboltable(path)  # noqa: F841
@@ -240,7 +240,10 @@ def execute(path):
     register["r3"] = 4
 
     for i in range(len(Instruction_Set)):
-         i = exec(text[Instruction_Set[i].readAddres()], i);
+        curr_line = text[Instruction_Set[i].readAddres()]
+        if (curr_line == "syscall"):
+            end()
+        i = exec(curr_line, i);
 
     # for line in text:
     #
