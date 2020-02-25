@@ -1,4 +1,5 @@
 from readasm import readasm  # noqa: F401
+from main import syscall
 import checkInstructionType  # noqa: F401
 import memory  # noqa: F401
 
@@ -193,7 +194,7 @@ def exec(line, pos):
         t2 = register[t2]
         register[res] = t1 + t2
         print("{} + {} = {}, at {}".format(t1, t2, t1 + t2, res))
-    elif instr == "addi":
+    if instr == "addi":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
         t2 = line.split()[3].replace(",", "")
@@ -201,7 +202,7 @@ def exec(line, pos):
         t2 = int(t2)
         register[res] = t1 + t2
         print("{} + {} = {}, at {}".format(t1, t2, t1 + t2, res))
-    elif instr == "ld" or instr == "lhz":
+    if instr == "ld" or instr == "lhz":
         line = line.replace(",", "")
         target = line.split()[1]
         print(line)
@@ -213,7 +214,7 @@ def exec(line, pos):
         else:
             register[target] = static[register[loc] + int(disp)]
         print("{} is now {}/*".format(target, register[target]))
-    elif instr == "std":
+    if instr == "std":
         line = line.replace(",", "")
         source = line.split()[1]
         print(line)
@@ -226,8 +227,11 @@ def exec(line, pos):
                 symtab[dest] + int(disp), static[symtab[source] + int(disp)]
             )
         )
-    return pos;
 
+    if instr == "sc":
+        syscall(register[2], regdict, *args)
+        
+    return pos
 def execute(path):
     symtab = makesymboltable(path)  # noqa: F841
     _, text = readasm(path)
