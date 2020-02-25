@@ -1,5 +1,4 @@
 from readasm import readasm  # noqa: F401
-import checkInstructionType  # noqa: F401
 import memory  # noqa: F401
 
 pc = 0
@@ -19,6 +18,8 @@ symtab = {}
 labels = []
 dtype = []
 values = []
+
+labeltable = {}
 
 
 def initialise():
@@ -58,7 +59,7 @@ def initialise():
     print("dynamic memory initialised")
 
     global register
-    register = {"r{}".format(i): 0 for i in range(32)}
+    register = {"{}".format(i): 0 for i in range(32)}
     print("32 registers ready")
 
 
@@ -113,6 +114,15 @@ def makesymboltable(path):
 # makesymboltable("asm_files/1.s")
 
 
+def makelabeltable(path):
+    global text
+    data, textlines = readasm(path)
+
+    for line in textlines:
+        if ":" in line:
+            text.update({line: textlines.index(line) + 1})
+
+
 def storeintoregister(address, value):
     global register
     register[address] = value
@@ -150,51 +160,61 @@ def exec(line):
         t1 = register[t1]
         t2 = register[t2]
         register[res] = t1 + t2
-        print("{} + {} = {}, at {}".format(t1, t2, t1 + t2, res))
+        print(">>{} + {} = {}, at register{}".format(t1, t2, t1 + t2, res))
     if instr == "addi":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
-        t2 = line.split()[3].replace(",", "")
         t1 = register[t1]
-        t2 = int(t2)
-        register[res] = t1 + t2
-        print("{} + {} = {}, at {}".format(t1, t2, t1 + t2, res))
+        t2 = line.split()[3].replace(",", "")
+        if t2 in symtab.keys():
+            register[res] = symtab[t2] + t1
+            print(">>register {} ={} + {}".format(res, symtab[t2], t1))
+        else:
+            register[res] = t1 + int(t2)
+            print(">>register {} = {} + {}".format(res, t1, t2))
+
     if instr == "ld" or instr == "lhz":
         line = line.replace(",", "")
         target = line.split()[1]
-        print(line)
         loc = line.split()[2]
         disp = loc.split("(")[0]
         loc = loc.split("(")[1].replace(")", "")
         if loc in symtab.keys():
-            register[target] = static[symtab[loc] + int(disp)]
+            register[target] = symtab[loc] + int(disp)
         else:
             register[target] = static[register[loc] + int(disp)]
-        print("{} is now {}/*".format(target, register[target]))
+        print(">>register {} is now {}/*".format(target, register[target]))
     if instr == "std":
         line = line.replace(",", "")
         source = line.split()[1]
-        print(line)
         dest = line.split()[2]
         disp = dest.split("(")[0]
         dest = dest.split("(")[1].replace(")", "")
-        static[symtab[dest] + int(disp)] = register[target]
-        print(
-            "{} is now {}/*".format(
-                symtab[dest] + int(disp), static[symtab[source] + int(disp)]
+        if dest in symtab.keys():
+            static[symtab[dest] + int(disp)] = register[source]
+            print(
+                ">>Address {} is now {}/*".format(
+                    symtab[dest] + int(disp), static[symtab[source] + int(disp)]
+                )
             )
-        )
+        else:
+            static[register[dest] + int(disp)] = register[source]
+            print(
+                ">>Address {} is now {}/*".format(
+                    register[dest] + int(disp), static[register[dest] + int(disp)]
+                )
+            )
+    if line == "sc LEV":
+        print(">>Safely exiting the program...")
 
 
 def execute(path):
-    symtab = makesymboltable(path)  # noqa: F841
+    global symtab
+    symtab = makesymboltable(path)
     _, text = readasm(path)
-    global register
-    register["r2"] = 3
-    register["r3"] = 4
     for line in text:
-
+        print(line)
         exec(line)
 
 
-execute("asm_files/test.s")
+execute("asm_files/3.s")
