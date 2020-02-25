@@ -226,6 +226,36 @@ def exec(line):
     if instr == "sc":
         parameter = register["0"]
         syscall(parameter, "3")
+    if instr == "bca":
+        line = line.replace(",", "")
+        #bo = line.split()[1].replace(",", "")
+        bl = line.split()[2].replace(",", "")
+        addr = line.split()[3].replace(",", "")
+        bo = register[bo]
+        print("Going to label" + addr)
+        if(bl == 28 and (register["7"] >> 59) == 1):
+            return label.get(addr)
+        elif (bl == 29 and (register["7"] >> 59) == 2):
+            return label.get(addr)
+        elif(bl == 30 and (register["7"] >> 59) == 4):
+            return label.get(addr)
+    if instr == "b":
+        ln = line.split()[1]
+        print("Going to label" + ln)
+        return label.get(ln)
+    if instr == "cmp":
+        ra = line.split()[3].replace(",", "")
+        rb = line.split()[4].replace(",", "")
+        bf = line.split()[1].replace(",", "")
+        ra = register[ra]
+        rb = register[rb]
+        if bf == 7 and ra < rb:
+            register["7"] = 1 << 59
+        if bf == 7 and ra > rb:
+            register["7"] = 2 << 59
+        if bf == 7 and ra == rb:
+            register["7"] = 4 << 59
+    return i+1
 
 
 def execute(path):
@@ -233,9 +263,10 @@ def execute(path):
     symtab = makesymboltable(path)
     _, text = readasm(path)
     # print(symtab)
-    for line in text:
-        print(line)
-        exec(line)
+    i=0
+    while i in range(len(text)):
+        print(text[i])
+        i=exec(text[i],i)
 
 
 execute("asm_files/2.s")
