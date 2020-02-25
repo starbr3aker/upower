@@ -1,5 +1,4 @@
 from readasm import readasm  # noqa: F401
-import memory  # noqa: F401
 
 pc = 0
 textstart = 0
@@ -111,9 +110,6 @@ def makesymboltable(path):
     return symtab
 
 
-# makesymboltable("asm_files/1.s")
-
-
 def makelabeltable(path):
     global text
     data, textlines = readasm(path)
@@ -123,27 +119,15 @@ def makelabeltable(path):
             text.update({line: textlines.index(line) + 1})
 
 
-def storeintoregister(address, value):
-    global register
-    register[address] = value
-    return None
+def extractstring(address):
+    """Takes a string from a dictionary (memory unit). The length of the string must be in the location of address"""
+    global static
+    len = int(static[address])
+    string = ""
+    for i in range(len):
+        string = string + str(static[address + i + 1])
 
-
-def readfromregister(address):
-    return register[address]
-
-
-def readfromlabel(label, address):
-    """Read value from label, and store that value into the address in register"""
-    global dtype
-    global labels
-    global register
-    global symtab
-    idx = 0  # index of label in labels
-
-    register[address] = symtab[label]
-
-    return dtype[idx]
+    return string
 
 
 def exec(line):
@@ -164,14 +148,20 @@ def exec(line):
     if instr == "addi":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
+        t1 = int(t1)
+        t2 = line.split()[3].replace(",", "")
+        register[res] = int(t1) + register[t2]
+        print(">>register {} = {} + {}".format(res, t1, t2))
+    if instr == "la":
+        res = line.split()[1].replace(",", "")
+        t1 = line.split()[2].replace(",", "")
         t1 = register[t1]
         t2 = line.split()[3].replace(",", "")
         if t2 in symtab.keys():
             register[res] = symtab[t2] + t1
             print(">>register {} ={} + {}".format(res, symtab[t2], t1))
         else:
-            register[res] = t1 + int(t2)
-            print(">>register {} = {} + {}".format(res, t1, t2))
+            print("Error: Label not found")
 
     if instr == "ld" or instr == "lhz":
         line = line.replace(",", "")
@@ -179,11 +169,15 @@ def exec(line):
         loc = line.split()[2]
         disp = loc.split("(")[0]
         loc = loc.split("(")[1].replace(")", "")
+        # print(type(target))
+        # print(type(loc))
+        # print(type(int(disp)))
         if loc in symtab.keys():
             register[target] = symtab[loc] + int(disp)
         else:
+            print(register[target])
             register[target] = static[register[loc] + int(disp)]
-        print(">>register {} is now {}/*".format(target, register[target]))
+        print(">>register {} is now {}".format(target, register[target]))
     if instr == "std":
         line = line.replace(",", "")
         source = line.split()[1]
@@ -193,28 +187,27 @@ def exec(line):
         if dest in symtab.keys():
             static[symtab[dest] + int(disp)] = register[source]
             print(
-                ">>Address {} is now {}/*".format(
+                ">>Address {} is now {}".format(
                     symtab[dest] + int(disp), static[symtab[source] + int(disp)]
                 )
             )
         else:
             static[register[dest] + int(disp)] = register[source]
             print(
-                ">>Address {} is now {}/*".format(
+                ">>Address {} is now {}".format(
                     register[dest] + int(disp), static[register[dest] + int(disp)]
                 )
             )
-    if line == "sc LEV":
-        print(">>Safely exiting the program...")
 
 
 def execute(path):
     global symtab
     symtab = makesymboltable(path)
     _, text = readasm(path)
+    print(symtab)
     for line in text:
         print(line)
         exec(line)
 
 
-execute("asm_files/3.s")
+execute("asm_files/2.s")
