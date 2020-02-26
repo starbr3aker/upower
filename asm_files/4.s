@@ -5,9 +5,9 @@ array: .word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 
 main:
     
-    addi 16, 0, 0           #i=0
+    add 16, 0, 31           #i=0
     addi 17, 0, 0           #sum=0
-    addi 10, 0, 10          #number of elements
+    addi 10, 10, 31          #number of elements
     la 11, 0, array             #loading the address of the array into the register
 
 loop:
@@ -16,8 +16,8 @@ loop:
     bca 30, end
     ld 12, 0(11)             #$t4 countains the value to be added
     add 17, 17, 12           #$s1 contains the sum of the integers
-    add 16, 16, 1            #$s0 contains the counter
-    add 11, 11, 4            #$t3 is the address of the array
+    addi 16, 1, 16           #$s0 contains the counter
+    addi 11, 1, 11            #$t3 is the address of the array
     b loop
 
 end:
