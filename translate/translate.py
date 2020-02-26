@@ -51,63 +51,61 @@ def twos_comp(val, bits):
 
 def x(string,binary):
     """Translaate X format"""
-    op = binary[0]
-    xo = binary[1] << 20
-    rc = binary[2] << 30
+    op = binary[0] << 26
+    xo = binary[1] << 11
+    rc = binary[2]
     temp = re.findall(r'\d+', string) 
     reg = list(map(int, temp)) 
-    reg[0] = reg[0] << 5
-    reg[1] = reg[1] << 10
+    reg[0] = reg[0] << 21
+    reg[1] = reg[1] << 16
     if len(reg) == 3:
-        reg[2] = reg[2] << 15
+        reg[2] = reg[2] << 11
     b32 = format((op + sum(reg) + xo + rc),"032b")
-    print(b32)
     return b32
 
 
 def xo(string,binary):
     """Translate XO format"""
-    op = binary[0]
-    oe = binary[1] << 20
-    xo = binary[2] << 21
-    rc = binary[3] << 30
+    op = binary[0] << 26
+    oe = binary[1] << 11
+    xo = binary[2] << 10
+    rc = binary[3] 
     temp = re.findall(r'\d+', string) 
     reg = list(map(int, temp)) 
-    reg[0] = reg[0] << 5
-    reg[1] = reg[1] << 10
+    reg[0] = reg[0] << 21
+    reg[1] = reg[1] << 16
     if len(reg) == 3:
-        reg[2] = reg[2] << 15
+        reg[2] = reg[2] << 11
     b32 = format((op + sum(reg) + xo + oe + rc),"032b")
-    print(b32)
     return b32
 
 
 def xs(string,binary):
     """Translate XS format"""
-    op = binary[0]
-    xo = binary[1] << 20
+    op = binary[0] << 26
+    xo = binary[1] << 11
     sh = 0
-    rc = binary[2] << 30
+    rc = binary[2] 
     temp = re.findall(r'\d+', string) 
     reg = list(map(int, temp)) 
-    reg[0] = reg[0] << 5
-    reg[1] = reg[1] << 10
-    reg[2] = reg[2] << 15
+    reg[0] = reg[0] << 21
+    reg[1] = reg[1] << 16
+    reg[2] = reg[2] << 11
     b32 = format((op + sum(reg) + xo + rc + sh),"032b")
-    print(b32)
     return b32
 
 
 def d(string,binary):
     """Translate D format"""
-    op = binary[0]
+    op = binary << 26
     temp = re.findall(r'-?\d+', string) 
     reg = list(map(int, temp))
+    nf = 0
     if(reg[1]<0):
         nf = 1
         reg[1]  = -reg[1]
-    reg[0] = reg[0] << 5
-    reg[2] = reg[2] << 10
+    reg[0] = reg[0] << 21
+    reg[2] = reg[2] << 16
     if nf:
         i=reg[1]
         k=0
@@ -124,25 +122,25 @@ def d(string,binary):
                 b16 = "1" + b16
             i = i + 1
         b32 = format((op + reg[0] + reg[2]),"016b")
-        b32 = b16 + b32
+        b32 = b32 + b16
     else:
-        reg[1] = reg[1] << 15
+        reg[1] = reg[1]
         b32 = format((op + reg[0] + reg[2] +reg[1]),"016b")
-    print(b32)
     return b32
 
 
 def ds(string,binary):
     """Translate DS format"""
-    op = binary[0]
-    xo = binary[1]
+    op = binary[0] << 26
+    xo = binary[1] 
     temp = re.findall(r'-?\d+', string) 
     reg = list(map(int, temp))
+    nf = 0
     if(reg[1]<0):
         nf = 1
         reg[1]  = -reg[1]
-    reg[0] = reg[0] << 5
-    reg[2] = reg[2] << 10
+    reg[0] = reg[0] << 21
+    reg[2] = reg[2] << 16
     if nf:
         i = reg[1]
         k = 0
@@ -160,80 +158,81 @@ def ds(string,binary):
             i = i + 1
         xo = format(xo,"002b")
         b32 = format((op + reg[0] + reg[2]),"016b")
-        b32 = xo + b16 + b32
+        b32 = b32 + b16 + xo
     else:
-        reg[1] = reg[1] << 15
-        xo = xo<<29
+        reg[1] = reg[1] << 2
+        xo = xo
         b32 = format((op + reg[0] + reg[2] + reg[1] + xo),"016b")
-    print(b32)
     return b32
 
 
 def m(string,binary):
     """Translate M format"""
-    op = binary[0]
-    rc = binary[1] << 30
+    op = binary[0] << 26
+    rc = binary[1] 
     temp = re.findall(r'\d+', string) 
     reg = list(map(int, temp)) 
-    reg[0] = reg[0] << 5
-    reg[1] = reg[1] << 10
-    reg[2] = reg[2] << 15
-    reg[3] = reg[3] << 20
-    reg[4] = reg[4] << 25
+    reg[0] = reg[0] << 21
+    reg[1] = reg[1] << 16
+    reg[2] = reg[2] << 11
+    reg[3] = reg[3] << 6
+    reg[4] = reg[4] << 1
     b32 = format((op + sum(reg) + rc),"032b")
-    print(b32)
     return b32
 
 
 def b(string,binary,label):
     """Translate B format"""
-    op = binary[0]
-    aa = binary[1]<<29
-    lk = binary[2] <<30
+    op = binary[0] << 26
+    aa = binary[1] << 1
+    lk = binary[2]
     temp = re.findall(r'-?\d+', string) 
     reg = list(map(int, temp))
-    reg[0] = reg[0] << 5
-    reg[1] = reg[1] << 10
-    line = string.split(",")[2].replace(",", "")
+    reg[0] = reg[0] << 16
+    line = string.split(",")[1].replace(",", "")
+    line=line.lstrip()
+    line=line.rstrip()
     line = label.get(line)
-    line = line << 15
-    aa = format(aa,"b")
-    lk = format(lk,"b")
-    b32 = format((op + reg[0] + line + reg[1] + lk + aa),"016b")
-    print(b32)
+    line = line << 2
+    b32 = format((op + reg[0] + line + lk + aa),"032b")
     return b32
 
     
 def i(string,binary,label):
-    po = binary[0]
-    aa = binary[1] << 29
-    lk = binary[2] << 30
-    line = string.split(",")[2].replace(",", "")
+    po = binary[0] << 26
+    aa = binary[1] << 1
+    lk = binary[2] 
+    line = string.split()[0]
+    line = line.lstrip()
+    line = line.rstrip()
     line = label.get(line)
-    line = line << 5
+    line = line << 2
     b32 = format((po + aa + lk + line),"032b")
-    print(b32)
     return b32
 
 def translate(string,label):
     """Translating to a 32b instruction"""
     string=string.lstrip()
     instr = string.split(" ",1)
-    form = checkInstructionType(instr[0])
+    form = checkInstructionType.checkType(instr[0])
     binary = INST_TAB.get(instr[0])
     if form == 1 :
-        x(instr[1],binary)
+        b32 = x(instr[1],binary)
     elif form == 2 :
-        xo(instr[1],binary)
+        b32 = xo(instr[1],binary)
     elif form == 3:
-        xs(instr[1],binary)
+        b32 = xs(instr[1],binary)
     elif form == 4:
-        d(instr[1],binary)
+        b32 = d(instr[1],binary)
     elif form == 5:
-        ds(instr[1],binary)
+        b32 = ds(instr[1],binary)
     elif form == 6:
-        m(instr[1],binary)
+        b32 = m(instr[1],binary)
     elif form == 7:
-        b(instr[1],binary,label)
+        b32 = b(instr[1],binary,label)
     elif form == 8:
-        i(instr[1],binary,label)
+        b32 = i(instr[1],binary,label)
+    print(b32)
+    print(len(b32))
+
+translate("rlwinm 5,5,5,5,5",{"end":10})
