@@ -174,7 +174,7 @@ def exec(line, i):
         t1 = int(t1)
         t2 = line.split()[3].replace(",", "")
         register[res] = int(t1) + register[t2]
-        print(">>register {} = {} + r{}".format(res, t1, t2))
+        print(">>register {} = {} + r{} = {}".format(res, t1, t2, register[res]))
     if instr == "la":
         res = line.split()[1].replace(",", "")
         t1 = line.split()[2].replace(",", "")
@@ -236,28 +236,34 @@ def exec(line, i):
         addr = line.split()[2].replace(",", "")
         # bo = register[bo]
         print("Going to label{} ".format(addr))
-        if bl == 28 and (register["7"] >> 59) == 1:
+        if bl == "28" and register["7"] == 1:
             return textmem.get(addr)
-        elif bl == 29 and (register["7"] >> 59) == 2:
+        elif bl == "29" and register["7"] == 2:
             return textmem.get(addr)
-        elif bl == 30 and (register["7"] >> 59) == 4:
+        elif bl == "30" and register["7"] == 4:
             return textmem.get(addr)
     if instr == "b":
         ln = line.split()[1]
-        print("Going to label" + ln)
+        print("Going to label " + ln)
         return textmem.get(ln)
     if instr == "cmp":
         ra = line.split()[3].replace(",", "")
         rb = line.split()[4].replace(",", "")
         bf = line.split()[1].replace(",", "")
+        # print(ra)
+        # print(rb)
+        # print(bf)
         ra = register[ra]
         rb = register[rb]
-        if bf == 7 and ra < rb:
-            register["7"] = 1 << 59
-        if bf == 7 and ra > rb:
-            register["7"] = 2 << 59
-        if bf == 7 and ra == rb:
-            register["7"] = 4 << 59
+        # print(ra)
+        # print(rb)
+        if bf == "7" and ra < rb:
+            register["7"] = 1
+        if bf == "7" and ra > rb:
+            register["7"] = 2
+        if bf == "7" and ra == rb:
+            register["7"] = 4
+        print(register["7"])
 
     return i + 1
 
