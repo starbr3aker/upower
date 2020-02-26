@@ -233,6 +233,6 @@ def translate(string,label):
     elif form == 8:
         b32 = i(instr[1],binary,label)
     print(b32)
-    print(len(b32))
+    return b32
 
-translate("rlwinm 5,5,5,5,5",{"end":10})
+#translate("rlwinm 5,5,5,5,5",{"end":10})
