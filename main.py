@@ -47,8 +47,8 @@ def initialise():
     global reserved
     reserved = {i: 0 for i in range(A, B)}
     print("reserved memory initialised")
-    global text
-    text = {i: 0 for i in range(B, 2 * B)}
+    global textmem
+    textmem = {i: 0 for i in range(B, 2 * B)}
     print("text memory initialised")
     global static
     static = {i: 0 for i in range(2 * B, 3 * B)}
@@ -86,6 +86,7 @@ def makesymboltable(path):
         if dtype[i] == "word":
             if len(values[i].split(",")) > 1:
                 # print(values[i])
+                symtab.update({labels[i]: staticend})
                 valueslist = values[i].split(",")
                 for j in range(len(valueslist)):
                     static[staticend] = int(valueslist[j].strip())
@@ -112,12 +113,13 @@ def makesymboltable(path):
 
 
 def makelabeltable(path):
-    global text
+    global textmem
     data, textlines = readasm(path)
 
     for line in textlines:
         if ":" in line:
-            text.update({line: textlines.index(line) + 1})
+            textmem.update({line.replace(":", ""): textlines.index(line) + 1})
+            print({line.replace(":", ""): textlines.index(line) + 1})
 
 
 def extractstring(address):
@@ -227,22 +229,23 @@ def exec(line, i):
         parameter = register["0"]
         syscall(parameter, "3")
     if instr == "bca":
+        print(line)
         line = line.replace(",", "")
-        #bo = line.split()[1].replace(",", "")
-        bl = line.split()[2].replace(",", "")
-        addr = line.split()[3].replace(",", "")
-        bo = register[bo]
-        print("Going to label" + addr)
-        if(bl == 28 and (register["7"] >> 59) == 1):
-            return label.get(addr)
-        elif (bl == 29 and (register["7"] >> 59) == 2):
-            return label.get(addr)
-        elif(bl == 30 and (register["7"] >> 59) == 4):
-            return label.get(addr)
+        # bo = line.split()[1].replace(",", "")
+        bl = line.split()[1].replace(",", "")
+        addr = line.split()[2].replace(",", "")
+        # bo = register[bo]
+        print("Going to label{} ".format(addr))
+        if bl == 28 and (register["7"] >> 59) == 1:
+            return textmem.get(addr)
+        elif bl == 29 and (register["7"] >> 59) == 2:
+            return textmem.get(addr)
+        elif bl == 30 and (register["7"] >> 59) == 4:
+            return textmem.get(addr)
     if instr == "b":
         ln = line.split()[1]
         print("Going to label" + ln)
-        return label.get(ln)
+        return textmem.get(ln)
     if instr == "cmp":
         ra = line.split()[3].replace(",", "")
         rb = line.split()[4].replace(",", "")
@@ -255,18 +258,20 @@ def exec(line, i):
             register["7"] = 2 << 59
         if bf == 7 and ra == rb:
             register["7"] = 4 << 59
-    return i+1
+
+    return i + 1
 
 
 def execute(path):
     global symtab
     symtab = makesymboltable(path)
+    makelabeltable(path)
     _, text = readasm(path)
     # print(symtab)
-    i=0
+    i = 0
     while i in range(len(text)):
         print(text[i])
-        i=exec(text[i],i)
+        i = exec(text[i], i)
 
 
-execute("asm_files/2.s")
+execute("asm_files/4.s")
