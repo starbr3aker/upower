@@ -16,7 +16,7 @@ main:
 
 # To display the result
 	addi 3, 0, 11
-	addi 0, 0, 1    #syscall to print int
+	addi 0, 1, 0    #syscall to print int
 	sc LEV
 
     addi 0, 0, 31     #syscall instruction reset
