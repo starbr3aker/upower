@@ -16,7 +16,7 @@ loop:
     bca 30, end
     ld 12, 0(11)             #$t4 countains the value to be added
     add 17, 17, 12           #$s1 contains the sum of the integers
-    add 16, 16, 1            #$s0 contains the counter
+    addi 16, 16, 1            #$s0 contains the counter
     add 11, 11, 4            #$t3 is the address of the array
     b loop
 
