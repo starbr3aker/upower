@@ -157,6 +157,7 @@ def syscall(instruction, args):
     register["0"] = 0
 
 def exec_inst(st,pc):
+    """Executes the binary instructions to provide output"""
     global register
     global static
     global staticstart
