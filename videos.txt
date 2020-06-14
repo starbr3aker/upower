@@ -1,0 +1,24 @@
+NATIONAL INSTITUTE OF TECHNOLOGY KARNATAKA, SURATHKAL
+
+The video demos are uploaded at:
+
+https://drive.google.com/drive/folders/1x6ZXkRyPD3YazumilLAJqLHjfP6HGpEI?usp=sharing
+
+The code is on github, at:
+https://github.com/NegaMage/coa-A3A4
+https://github.com/NegaMage/upower
+
+These video demonstrations are submitted as part of course requirements for CS250, by students of BTech CSE-2022.
+
+Submitted by:
+
+Feyaz Baker        :181CO119
+Shrvan Warke       :181CO151
+Nihar KG Rai       :181CO235
+Vignesh Srinivasan :181CO258
+
+In this folder, please find:
+
+A1 : A summary of the uPower interpreter made with Python.
+A3 : The MIPS processor implemented in verilog.
+A4 : The uPower processor implemented in verilog.
