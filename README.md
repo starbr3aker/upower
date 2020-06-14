@@ -50,4 +50,13 @@ register 0 is the input/type of syscall
 
 register 31 is treated as zero register.
 
+## Submitted by:
+
+1. Feyaz Baker - 181co119
+
+2. Shrvan Warke - 181co151
+
+3. Nihar KG Rai - 181co235
+
+4. Vignesh Srinivasan - 181co258
 
